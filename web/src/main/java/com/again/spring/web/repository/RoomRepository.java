@@ -10,4 +10,10 @@ import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import java.util.List;
 
 public interface RoomRepository extends MongoRepository<Room, String>, QuerydslPredicateExecutor<Room> {
+
+    @Query
+    List<Room> findByHouse(House house);
+
+    @Query
+    List<Room> findByHouseAndType(House house, RoomType type);
 }

@@ -21,6 +21,10 @@ public class Room {
         this.type = type;
     }
 
+    public Room() {
+
+    }
+
     public String getId() {
         return id;
     }

@@ -3,7 +3,6 @@ package com.again.spring.web.model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
-import org.springframework.data.mongodb.repository.ExistsQuery;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,9 +12,10 @@ public class House {
 
     @Id
     private String id;
+    private String address;
     @DocumentReference(lazy = true)
     private List<Room> rooms;
-    @DocumentReference(lazy = true)
+    @DocumentReference
     private List<User> tenants;
     private Boolean isClean;
 
@@ -28,20 +28,28 @@ public class House {
         return id;
     }
 
-    public List<Room> getRooms() {
-        return rooms;
+    public String getAddress() {
+        return address;
     }
 
-    public void setRooms(List<Room> rooms) {
-        this.rooms = rooms;
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public List<Room> getRooms() {
+        return rooms;
     }
 
     public List<User> getTenants() {
         return tenants;
     }
 
-    public void setTenants(List<User> tenants) {
-        this.tenants = tenants;
+    public void addTenant(User tenant) {
+        this.tenants.add(tenant);
+    }
+
+    public void addRoom(Room room) {
+        this.rooms.add(room);
     }
 
     public Boolean getClean() {
@@ -65,6 +73,7 @@ public class House {
     public String toString() {
         return "House{" +
                 "id='" + id + '\'' +
+                ", address=" + address +
                 ", rooms=" + rooms +
                 ", tenants=" + tenants +
                 ", isClean=" + isClean +

@@ -13,6 +13,6 @@ public interface UserRepository extends MongoRepository<User, String>, QuerydslP
     @Query("{ 'name' : ?0 }")
     List<User> findUsersByName(String name);
 
-    @Query("{ 'username' : ?0 }")
+    @Query("{ 'userName' : ?0 }")
     List<User> findUsersByUserName(String userName);
 }

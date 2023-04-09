@@ -21,11 +21,4 @@
     <bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
 
     <mongo:repositories base-package="com.again.spring.web.repository" mongo-template-ref="mongoTemplate" />
-
-    <!-- NO NEED > <bean class="com.baeldung.event.CascadeSaveMongoEventListener"/> </!-->
-
-    <mongo:mapping-converter id="mongoConverter" base-package="com.baeldung.converter">
-        <mongo:custom-converters base-package="com.baeldung.converter" />
-    </mongo:mapping-converter>
-
 </beans>
