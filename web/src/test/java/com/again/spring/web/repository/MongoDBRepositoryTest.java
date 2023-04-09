@@ -182,6 +182,14 @@ public class MongoDBRepositoryTest {
         roomRepository.save(room);
 
         assertThat(
+                roomRepository.findByHouseId(persistedHouse.getId()).get(0).getType()
+        ).isEqualTo(RoomType.KITCHEN);
+
+        assertThat(
+                roomRepository.findByHouseIdAndType(persistedHouse.getId(), RoomType.KITCHEN).get(0).getType()
+        ).isEqualTo(RoomType.KITCHEN);
+
+        assertThat(
                 roomRepository.findByHouseAndType(persistedHouse, RoomType.KITCHEN).get(0).getType()
         ).isEqualTo(RoomType.KITCHEN);
     }

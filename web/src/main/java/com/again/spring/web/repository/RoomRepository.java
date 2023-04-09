@@ -16,4 +16,10 @@ public interface RoomRepository extends MongoRepository<Room, String>, QuerydslP
 
     @Query
     List<Room> findByHouseAndType(House house, RoomType type);
+
+    @Query
+    List<Room> findByHouseId(String id);
+
+    @Query
+    List<Room> findByHouseIdAndType(String id, RoomType type);
 }

@@ -16,4 +16,6 @@ public interface HouseRepository extends MongoRepository<House, String>, Queryds
 
     @Query("{ 'isClean' : true }")
     List<House> findCleanHouse();
+    @Query
+    List<House> findByTenantsId(String id);
 }
