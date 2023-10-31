@@ -25,8 +25,8 @@ public interface RoomRepository extends MongoRepository<Room, String>, QuerydslP
     List<Room> findByHouseIdAndType(String id, RoomType type);
 
     @Query
-    List<Room> findByHouseIdAndAssignedTenant(String id, User assignedTenant);
+    List<Room> findByHouseIdAndAssignedTenantId(String id, String assignedTenantId);
 
-    @Query("{ 'isClean' : ?0 }")
-    List<Room> findByHouseIdAndStatus(String id, Boolean isClean);
+    @Query
+    List<Room> findByHouseIdAndIsClean(String id, Boolean isClean);
 }

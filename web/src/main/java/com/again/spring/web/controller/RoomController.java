@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/room")
+@RequestMapping("/rooms")
 public class RoomController {
 
     @Autowired
@@ -29,23 +29,27 @@ public class RoomController {
     }
 
     @GetMapping("/house/{houseId}")
-    public List<Room> getRoomsInHouse(@PathVariable String houseId) {
-        return this.roomRepository.findByHouseId(houseId);
+    public ResponseEntity getRoomsInHouse(@PathVariable String houseId) {
+        List<Room> result = this.roomRepository.findByHouseId(houseId);
+        return buildResponse(result);
     }
 
     @GetMapping("/house/{houseId}/type/{type}")
-    public List<Room> getRoomsInHouseByType(@PathVariable String houseId, @PathVariable RoomType type) {
-        return this.roomRepository.findByHouseIdAndType(houseId, type);
+    public ResponseEntity getRoomsInHouseByType(@PathVariable String houseId, @PathVariable RoomType type) {
+        List<Room> result = this.roomRepository.findByHouseIdAndType(houseId, type);
+        return buildResponse(result);
     }
 
     @GetMapping("/house/{houseId}/status")
-    public List<Room> getRoomsInHouseByStatus(@PathVariable String houseId, @RequestParam Boolean status) {
-        return this.roomRepository.findByHouseIdAndStatus(houseId, status);
+    public ResponseEntity getRoomsInHouseByStatus(@PathVariable String houseId, @RequestParam Boolean status) {
+        List<Room> result = this.roomRepository.findByHouseIdAndIsClean(houseId, status);
+        return buildResponse(result);
     }
 
     @GetMapping("/house/{houseId}/tenant")
-    public List<Room> getRoomsInHouseByAssignedTenant(@PathVariable String houseId, @RequestParam User tenant) {
-        return this.roomRepository.findByHouseIdAndAssignedTenant(houseId, tenant);
+    public ResponseEntity getRoomsInHouseByAssignedTenantId(@PathVariable String houseId, @RequestParam String id) {
+        List<Room> result = this.roomRepository.findByHouseIdAndAssignedTenantId(houseId, id);
+        return buildResponse(result);
     }
 
     @PutMapping("/{id}/status")
@@ -67,5 +71,12 @@ public class RoomController {
     @PutMapping("/{id}/remove")
     public ResponseEntity removeTenant(@PathVariable String id) {
         return null;
+    }
+
+    private ResponseEntity buildResponse(List result) {
+        if (!result.isEmpty()) {
+            return ResponseEntity.ok(result);
+        }
+        return ResponseEntity.notFound().build();
     }
 }
