@@ -22,4 +22,7 @@ public interface RoomRepository extends MongoRepository<Room, String>, QuerydslP
 
     @Query
     List<Room> findByHouseIdAndType(String id, RoomType type);
+
+    @Query("{ 'isClean' : ?0 }")
+    List<Room> findByHouseIdAndStatus(String id, Boolean isClean);
 }

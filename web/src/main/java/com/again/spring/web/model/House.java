@@ -17,8 +17,6 @@ public class House {
     private List<Room> rooms;
     @DocumentReference
     private List<User> tenants;
-    private Boolean isClean;
-
     public House() {
         this.rooms = new ArrayList<>();
         this.tenants = new ArrayList<>();
@@ -52,18 +50,14 @@ public class House {
         this.rooms.add(room);
     }
 
-    public Boolean getClean() {
-        return isClean;
-    }
+    public void deleteRoom(Room room) { this.rooms.remove(room); }
 
-    public void setClean(Boolean clean) {
-        isClean = clean;
-    }
+    public void deleteTenant(User tenant) { this.tenants.remove(tenant); }
 
     public Double computeCleaningPercentage() {
         if (!this.rooms.isEmpty()) {
             int totalRooms = this.rooms.size();
-            long cleanRooms = this.rooms.stream().map(room -> room.getClean() == Boolean.TRUE).count();
+            long cleanRooms = this.rooms.stream().map(room -> Boolean.TRUE.equals(room.getClean())).count();
             return (double) (cleanRooms/totalRooms);
         }
         return 0.0;
@@ -76,7 +70,7 @@ public class House {
                 ", address=" + address +
                 ", rooms=" + rooms +
                 ", tenants=" + tenants +
-                ", isClean=" + isClean +
+                ", cleaningPercentage=" + computeCleaningPercentage().toString() +
                 '}';
     }
 }

@@ -20,6 +20,8 @@ import java.util.Collections;
 public class MongoConfig extends AbstractMongoClientConfiguration {
 
     private static final String DB_NAME = "test";
+    private static final String CONNECTION_STRING = "mongodb://localhost:27017/test";
+    private static final String BASE_PACKAGE = "com.again.spring.web";
 
     @Override
     protected String getDatabaseName() {
@@ -28,7 +30,7 @@ public class MongoConfig extends AbstractMongoClientConfiguration {
 
     @Override
     public MongoClient mongoClient() {
-        ConnectionString connectionString = new ConnectionString("mongodb://localhost:27017/test");
+        ConnectionString connectionString = new ConnectionString(CONNECTION_STRING);
         MongoClientSettings mongoClientSettings = MongoClientSettings.builder()
                 .applyConnectionString(connectionString)
                 .build();
@@ -37,7 +39,7 @@ public class MongoConfig extends AbstractMongoClientConfiguration {
 
     @Override
     public Collection getMappingBasePackages() {
-        return Collections.singleton("com.again.spring.web");
+        return Collections.singleton(BASE_PACKAGE);
     }
 
 
