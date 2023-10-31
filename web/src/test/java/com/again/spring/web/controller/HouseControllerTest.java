@@ -1,6 +1,8 @@
 package com.again.spring.web.controller;
 
 import com.again.spring.web.model.House;
+import com.again.spring.web.model.Room;
+import com.again.spring.web.model.RoomType;
 import com.again.spring.web.model.User;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,17 +25,22 @@ public class HouseControllerTest {
     private TestRestTemplate restTemplate;
     @Autowired
     private HouseController houseController;
+    @Autowired
+    private RoomController roomController;
 
     @Autowired
     private UserController userController;
     private ObjectMapper objectMapper = new ObjectMapper();
     private User alice01 = new User("Alice", "alice01");
+    private Room defaultRoom = new Room();
     @LocalServerPort
     int serverPort;
 
     @Test
     public void contextLoads() throws Exception {
         assertThat(houseController).isNotNull();
+        assertThat(userController).isNotNull();
+        assertThat(roomController).isNotNull();
         assertThat(restTemplate).isNotNull();
     }
 
@@ -166,6 +173,25 @@ public class HouseControllerTest {
     }
 
     @Test
+    public void shouldNotAddRoom() {
+        final String baseUrl = "http://localhost:"+serverPort+"/houses/";
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Content-Type", "application/json");
+        HttpEntity<Room> request = new HttpEntity<>(defaultRoom, headers);
+
+        ResponseEntity<String> result = restTemplate.exchange(baseUrl+"/fakeid/room/add", HttpMethod.PUT, request, String.class);
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+    @Test
+    public void shouldNotRemoveRoom() {
+        final String baseUrl = "http://localhost:"+serverPort+"/houses/";
+        Map<String, String> parameters = Collections.singletonMap("roomId", "fakefakefake");
+        ResponseEntity<String> result = restTemplate.exchange(baseUrl+"/fakeid/room/remove?roomId={roomId}", HttpMethod.PUT, null, String.class, parameters);
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+    @Test
     public void shouldAddTenant() throws JsonProcessingException {
         final String baseUrl = "http://localhost:"+serverPort+"/houses/";
         final House newHouse = new House();
@@ -184,5 +210,28 @@ public class HouseControllerTest {
         assertThat(patchedHouse.getAddress()).isEqualTo(houseAdded.getAddress());
         assertThat(patchedHouse.getTenants().size()).isGreaterThan(0);
         assertThat(patchedHouse.getTenants().get(0).getName()).isEqualTo(u.getName());
+    }
+
+    @Test
+    public void shouldAddRoom() throws JsonProcessingException {
+        final String baseUrl = "http://localhost:"+serverPort+"/houses/";
+        final House newHouse = new House();
+        newHouse.setAddress("Grimmauld Place, 58, London");
+        House houseAdded = houseController.createHouse(newHouse);
+        defaultRoom.setType(RoomType.BEDROOM);
+        defaultRoom.setHouse(houseAdded);
+        Room r = roomController.createRoom(defaultRoom);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Content-Type", "application/json");
+        HttpEntity<Room> request = new HttpEntity<>(r, headers);
+
+        ResponseEntity<String> result = restTemplate.exchange(baseUrl+"/"+houseAdded.getId()+"/room/add", HttpMethod.PUT, request, String.class);
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
+        House patchedHouse = objectMapper.readValue(result.getBody(), House.class);
+        assertThat(patchedHouse.getAddress()).isEqualTo(houseAdded.getAddress());
+        assertThat(patchedHouse.getRooms().size()).isGreaterThan(0);
+        assertThat(patchedHouse.getRooms().get(0).getType()).isEqualTo(RoomType.BEDROOM);
+        assertThat(patchedHouse.getRooms().get(0).getHouse().getId()).isEqualTo(houseAdded.getId());
     }
 }

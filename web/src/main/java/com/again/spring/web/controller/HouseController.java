@@ -27,6 +27,27 @@ public class HouseController {
     public House createHouse(@RequestBody House house) {
         return this.houseRepository.insert(house);
     }
+    @PutMapping("/{id}/room/add")
+    public ResponseEntity addRoom(@PathVariable String id, @RequestBody Room room) {
+        Optional<House> optionalHouse = this.houseRepository.findById(id);
+        if (optionalHouse.isPresent()) {
+            House h = optionalHouse.get();
+            h.addRoom(room);
+            return ResponseEntity.ok(this.houseRepository.save(h));
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @PutMapping("/{id}/room/remove")
+    public ResponseEntity removeRoom(@PathVariable String id, @RequestParam String roomId) {
+        Optional<House> optionalHouse = this.houseRepository.findById(id);
+        if (optionalHouse.isPresent()) {
+            House h = optionalHouse.get();
+            h.getRooms().removeIf(room -> roomId.equals(room.getId()));
+            return ResponseEntity.ok(this.houseRepository.save(h));
+        }
+        return ResponseEntity.notFound().build();
+    }
 
     @GetMapping("/address")
     public ResponseEntity getByAddress(@RequestParam String address) {
@@ -67,11 +88,11 @@ public class HouseController {
     }
 
     @PutMapping("/{id}/remove")
-    public ResponseEntity removeTenant(@PathVariable String id, @RequestBody User user) {
+    public ResponseEntity removeTenant(@PathVariable String id, @RequestParam String userId) {
         Optional<House> optionalHouse = this.houseRepository.findById(id);
         if (optionalHouse.isPresent()) {
             House h = optionalHouse.get();
-            h.deleteTenant(user);
+            h.getTenants().removeIf(user -> userId.equals(user.getId()));
             return ResponseEntity.ok(this.houseRepository.save(h));
         }
         return ResponseEntity.notFound().build();

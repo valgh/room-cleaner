@@ -28,9 +28,6 @@ public class RoomController {
         return this.roomRepository.insert(room);
     }
 
-    @PostMapping("/delete/{id}")
-    public void deleteRoom(@PathVariable String id) { this.roomRepository.deleteById(id) ;}
-
     @GetMapping("/house/{houseId}")
     public List<Room> getRoomsInHouse(@PathVariable String houseId) {
         return this.roomRepository.findByHouseId(houseId);
