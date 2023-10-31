@@ -10,9 +10,6 @@ import java.util.List;
 public interface HouseRepository extends MongoRepository<House, String>, QuerydslPredicateExecutor<House> {
     @Query("{ 'address' : ?0 }")
     List<House> findByAddress(String address);
-
-    @Query
-    List<House> findByTenantsIn(List<User> tenants);
     @Query
     List<House> findByTenantsId(String id);
 }

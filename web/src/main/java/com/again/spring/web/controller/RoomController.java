@@ -3,6 +3,7 @@ package com.again.spring.web.controller;
 import com.again.spring.web.model.House;
 import com.again.spring.web.model.Room;
 import com.again.spring.web.model.RoomType;
+import com.again.spring.web.model.User;
 import com.again.spring.web.repository.RoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -45,7 +46,12 @@ public class RoomController {
         return this.roomRepository.findByHouseIdAndStatus(houseId, status);
     }
 
-    @PatchMapping("/{id}/status")
+    @GetMapping("/house/{houseId}/tenant")
+    public List<Room> getRoomsInHouseByAssignedTenant(@PathVariable String houseId, @RequestParam User tenant) {
+        return this.roomRepository.findByHouseIdAndAssignedTenant(houseId, tenant);
+    }
+
+    @PutMapping("/{id}/status")
     public ResponseEntity setRoomStatus(@PathVariable String id, @RequestParam Boolean status) {
         Optional<Room> optionalRoom = this.roomRepository.findById(id);
         if (optionalRoom.isPresent()) {
@@ -54,5 +60,15 @@ public class RoomController {
             return ResponseEntity.ok(this.roomRepository.save(r));
         }
         return ResponseEntity.notFound().build();
+    }
+
+    @PutMapping("/{id}/assign/")
+    public ResponseEntity assignTenant(@PathVariable String id, @RequestParam String userId) {
+        return null;
+    }
+
+    @PutMapping("/{id}/remove")
+    public ResponseEntity removeTenant(@PathVariable String id) {
+        return null;
     }
 }

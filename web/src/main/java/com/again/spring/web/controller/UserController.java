@@ -57,7 +57,7 @@ public class UserController {
         return ResponseEntity.notFound().build();
     }
 
-    @PatchMapping("/assign/{id}")
+    @PutMapping("/assign/{id}")
     public User assignHouse(@PathVariable String id, @RequestParam String houseId) {
         return null;
     }

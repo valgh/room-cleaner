@@ -57,7 +57,7 @@ public class House {
     public void deleteTenant(User tenant) { this.tenants.remove(tenant); }
 
     public Double computeCleaningPercentage() {
-        if (!this.rooms.isEmpty()) {
+        if (this.rooms != null && !this.rooms.isEmpty()) {
             int totalRooms = this.rooms.size();
             long cleanRooms = this.rooms.stream().map(room -> Boolean.TRUE.equals(room.getClean())).count();
             return (double) (cleanRooms/totalRooms);

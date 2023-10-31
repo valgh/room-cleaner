@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/house")
+@RequestMapping("/houses")
 public class HouseController {
 
     @Autowired
@@ -29,21 +29,33 @@ public class HouseController {
     }
 
     @GetMapping("/address")
-    public List<House> getByAddress(@RequestParam String address) {
-        return this.houseRepository.findByAddress(address);
+    public ResponseEntity getByAddress(@RequestParam String address) {
+        List<House> result = this.houseRepository.findByAddress(address);
+        if (!result.isEmpty()) {
+            return ResponseEntity.ok(result);
+        }
+        return ResponseEntity.notFound().build();
     }
 
-    @GetMapping("/tenants")
-    public List<House> findByTenants(@RequestBody List<User> tenants) {
-        return this.houseRepository.findByTenantsIn(tenants);
+    @GetMapping("/{id}")
+    public ResponseEntity getById(@PathVariable String id) {
+        Optional<House> result = this.houseRepository.findById(id);
+        if (result.isPresent()) {
+            return ResponseEntity.ok(result.get());
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @GetMapping("/tenant/{id}")
-    public List<House> findByTenantId(@PathVariable String id) {
-        return this.houseRepository.findByTenantsId(id);
+    public ResponseEntity findByTenantId(@PathVariable String id) {
+        List<House> result = this.houseRepository.findByTenantsId(id);
+        if (!result.isEmpty()) {
+            return ResponseEntity.ok(result);
+        }
+        return ResponseEntity.notFound().build();
     }
 
-    @PatchMapping("/{id}/add/tenant")
+    @PutMapping("/{id}/add")
     public ResponseEntity addTenant(@PathVariable String id, @RequestBody User user) {
         Optional<House> optionalHouse = this.houseRepository.findById(id);
         if (optionalHouse.isPresent()) {
@@ -54,8 +66,8 @@ public class HouseController {
         return ResponseEntity.notFound().build();
     }
 
-    @PatchMapping("/{id}/delete/tenant")
-    public ResponseEntity deleteTenant(@PathVariable String id, @RequestBody User user) {
+    @PutMapping("/{id}/remove")
+    public ResponseEntity removeTenant(@PathVariable String id, @RequestBody User user) {
         Optional<House> optionalHouse = this.houseRepository.findById(id);
         if (optionalHouse.isPresent()) {
             House h = optionalHouse.get();
