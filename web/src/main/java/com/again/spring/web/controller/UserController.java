@@ -39,17 +39,25 @@ public class UserController {
         return this.userRepository.insert(user);
     }
 
-    @GetMapping("/{userName}")
-    public List<User> getUsersByUserName(@PathVariable String userName) {
-        return this.userRepository.findUsersByUserName(userName);
+    @GetMapping("/username/{userName}")
+    public ResponseEntity getUsersByUserName(@PathVariable String userName) {
+        List<User> result = this.userRepository.findUsersByUserName(userName);
+        if (!result.isEmpty()) {
+            return ResponseEntity.ok(result);
+        }
+        return ResponseEntity.notFound().build();
     }
 
-    @GetMapping("/{name}")
-    public List<User> getUsersByName(@PathVariable String name) {
-        return this.userRepository.findUsersByName(name);
+    @GetMapping("/name/{name}")
+    public ResponseEntity getUsersByName(@PathVariable String name) {
+        List<User> result = this.userRepository.findUsersByName(name);
+        if (!result.isEmpty()) {
+            return ResponseEntity.ok(result);
+        }
+        return ResponseEntity.notFound().build();
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping("/assign/{id}")
     public User assignHouse(@PathVariable String id, @RequestParam String houseId) {
         return null;
     }

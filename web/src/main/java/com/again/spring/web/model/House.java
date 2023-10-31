@@ -1,5 +1,6 @@
 package com.again.spring.web.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
@@ -8,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Document
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class House {
 
     @Id

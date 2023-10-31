@@ -1,10 +1,12 @@
 package com.again.spring.web.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
 @Document
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class User {
 
     @Id
