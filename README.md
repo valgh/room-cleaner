@@ -21,17 +21,17 @@ The documentation for the REST APIs that are exposed in RoomCleaner is built upo
 
 The endpoints are grouped in three different sections, one for each object of the model:
 
-![](doc/swaggerui.png)
+![](web/doc/swaggerui.png)
 
 Each endpoint has its own documentation with required/optional parameters, body and responses:
 
-![](doc/newtenanthouse.png)
-![](doc/responses.png)
-![](doc/getroomsinhouse.png)
+![](web/doc/newtenanthouse.png)
+![](web/doc/responses.png)
+![](web/doc/getroomsinhouse.png)
 
 Schemas of the main objects of the model are also available in the Swagger UI interface:
 
-![](doc/schemas.png)
+![](web/doc/schemas.png)
 
 ## TODO
 
