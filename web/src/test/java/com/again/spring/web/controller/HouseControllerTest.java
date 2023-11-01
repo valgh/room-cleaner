@@ -79,7 +79,7 @@ public class HouseControllerTest {
     @Test
     public void shouldNotFindHouseById() {
         final String baseUrl = "http://localhost:"+serverPort+"/houses/";
-        ResponseEntity<String> result = restTemplate.getForEntity(baseUrl+"/fakeid", String.class);
+        ResponseEntity<String> result = restTemplate.getForEntity(baseUrl+"fakeid", String.class);
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
@@ -92,7 +92,7 @@ public class HouseControllerTest {
         newHouse.addTenant(u);
         House houseAdded = houseController.createHouse(newHouse);
 
-        ResponseEntity<String> result = restTemplate.getForEntity(baseUrl+"/"+houseAdded.getId(), String.class);
+        ResponseEntity<String> result = restTemplate.getForEntity(baseUrl+houseAdded.getId(), String.class);
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(result.hasBody()).isEqualTo(Boolean.TRUE);
         House queriedHouse = objectMapper.readValue(result.getBody(), House.class);
@@ -103,7 +103,7 @@ public class HouseControllerTest {
     @Test
     public void shouldNotFindByTenantId() {
         final String baseUrl = "http://localhost:"+serverPort+"/houses/";
-        ResponseEntity<String> result = restTemplate.getForEntity(baseUrl+"/tenant/fakeid", String.class);
+        ResponseEntity<String> result = restTemplate.getForEntity(baseUrl+"tenant/fakeid", String.class);
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
@@ -116,7 +116,7 @@ public class HouseControllerTest {
         newHouse.addTenant(u);
         House houseAdded = houseController.createHouse(newHouse);
 
-        ResponseEntity<String> result = restTemplate.getForEntity(baseUrl+"/tenant/"+u.getId(), String.class);
+        ResponseEntity<String> result = restTemplate.getForEntity(baseUrl+"tenant/"+u.getId(), String.class);
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(result.hasBody()).isEqualTo(Boolean.TRUE);
         List<House> results = objectMapper.readValue(result.getBody(), objectMapper.getTypeFactory().constructCollectionType(List.class, House.class));
@@ -128,7 +128,7 @@ public class HouseControllerTest {
     public void shouldNotFindByAddress() {
         final String baseUrl = "http://localhost:"+serverPort+"/houses/";
         Map<String, String> parameters = Collections.singletonMap("address", "fakeaddress");
-        ResponseEntity<String> result = restTemplate.getForEntity(baseUrl+"/address?address={address}", String.class, parameters);
+        ResponseEntity<String> result = restTemplate.getForEntity(baseUrl+"address?addr={address}", String.class, parameters);
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
@@ -136,17 +136,15 @@ public class HouseControllerTest {
     public void shouldFindByAddress() throws JsonProcessingException {
         final String baseUrl = "http://localhost:"+serverPort+"/houses/";
         final House newHouse = new House();
-        newHouse.setAddress("Grimmauld Place, 58, London");
-        User u = userController.createUser(alice01);
-        newHouse.addTenant(u);
+        newHouse.setAddress("Grimmauld Place, 62, London");
         House houseAdded = houseController.createHouse(newHouse);
-        Map<String, String> parameters = Collections.singletonMap("address", "Grimmauld Place, 58, London");
+        Map<String, String> parameters = Collections.singletonMap("address", "Grimmauld Place, 62, London");
 
-        ResponseEntity<String> result = restTemplate.getForEntity(baseUrl+"/address?address={address}", String.class, parameters);
+        ResponseEntity<String> result = restTemplate.getForEntity(baseUrl+"address?addr={address}", String.class, parameters);
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(result.hasBody()).isEqualTo(Boolean.TRUE);
         List<House> results = objectMapper.readValue(result.getBody(), objectMapper.getTypeFactory().constructCollectionType(List.class, House.class));
-        assertThat(results.size()).isGreaterThan(1);
+        assertThat(results.size()).isGreaterThan(0);
         assertThat(results.get(0).getAddress()).isEqualTo(newHouse.getAddress());
     }
 
@@ -157,18 +155,15 @@ public class HouseControllerTest {
         headers.set("Content-Type", "application/json");
         HttpEntity<User> request = new HttpEntity<>(alice01, headers);
 
-        ResponseEntity<String> result = restTemplate.exchange(baseUrl+"/fakeid/add", HttpMethod.PUT, request, String.class);
+        ResponseEntity<String> result = restTemplate.exchange(baseUrl+"fakeid/add", HttpMethod.PUT, request, String.class);
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
     @Test
     public void shouldNotRemoveTenant() {
         final String baseUrl = "http://localhost:"+serverPort+"/houses/";
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Content-Type", "application/json");
-        HttpEntity<User> request = new HttpEntity<>(alice01, headers);
-
-        ResponseEntity<String> result = restTemplate.exchange(baseUrl+"/fakeid/remove", HttpMethod.PUT, request, String.class);
+        Map<String, String> params = Collections.singletonMap("userId", "fake");
+        ResponseEntity<String> result = restTemplate.exchange(baseUrl+"fakeid/remove?userId={userId}", HttpMethod.PUT, null, String.class, params);
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
@@ -179,7 +174,7 @@ public class HouseControllerTest {
         headers.set("Content-Type", "application/json");
         HttpEntity<Room> request = new HttpEntity<>(defaultRoom, headers);
 
-        ResponseEntity<String> result = restTemplate.exchange(baseUrl+"/fakeid/room/add", HttpMethod.PUT, request, String.class);
+        ResponseEntity<String> result = restTemplate.exchange(baseUrl+"fakeid/room/add", HttpMethod.PUT, request, String.class);
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
@@ -187,7 +182,7 @@ public class HouseControllerTest {
     public void shouldNotRemoveRoom() {
         final String baseUrl = "http://localhost:"+serverPort+"/houses/";
         Map<String, String> parameters = Collections.singletonMap("roomId", "fakefakefake");
-        ResponseEntity<String> result = restTemplate.exchange(baseUrl+"/fakeid/room/remove?roomId={roomId}", HttpMethod.PUT, null, String.class, parameters);
+        ResponseEntity<String> result = restTemplate.exchange(baseUrl+"fakeid/room/remove?roomId={roomId}", HttpMethod.PUT, null, String.class, parameters);
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
@@ -204,7 +199,7 @@ public class HouseControllerTest {
         headers.set("Content-Type", "application/json");
         HttpEntity<User> request = new HttpEntity<>(u, headers);
 
-        ResponseEntity<String> result = restTemplate.exchange(baseUrl+"/"+houseAdded.getId()+"/add", HttpMethod.PUT, request, String.class);
+        ResponseEntity<String> result = restTemplate.exchange(baseUrl+houseAdded.getId()+"/add", HttpMethod.PUT, request, String.class);
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
         House patchedHouse = objectMapper.readValue(result.getBody(), House.class);
         assertThat(patchedHouse.getAddress()).isEqualTo(houseAdded.getAddress());
@@ -226,7 +221,7 @@ public class HouseControllerTest {
         headers.set("Content-Type", "application/json");
         HttpEntity<Room> request = new HttpEntity<>(r, headers);
 
-        ResponseEntity<String> result = restTemplate.exchange(baseUrl+"/"+houseAdded.getId()+"/room/add", HttpMethod.PUT, request, String.class);
+        ResponseEntity<String> result = restTemplate.exchange(baseUrl+houseAdded.getId()+"/room/add", HttpMethod.PUT, request, String.class);
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
         House patchedHouse = objectMapper.readValue(result.getBody(), House.class);
         assertThat(patchedHouse.getAddress()).isEqualTo(houseAdded.getAddress());

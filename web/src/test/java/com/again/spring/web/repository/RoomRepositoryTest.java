@@ -62,7 +62,7 @@ public class RoomRepositoryTest {
         final House persistedHouse = mongoTemplate.findOne(Query.query(Criteria.where("address").is("lptc, 51, rm")), House.class);
 
         assert tenant != null;
-        tenant.setHouse(persistedHouse);
+        tenant.addHouse(persistedHouse);
         userRepository.save(tenant);
 
         final Room room = new Room();

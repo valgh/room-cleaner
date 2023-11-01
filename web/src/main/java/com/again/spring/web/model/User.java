@@ -1,9 +1,15 @@
 package com.again.spring.web.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Document
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -14,11 +20,12 @@ public class User {
     private String userName;
     private String name;
     @DocumentReference(lazy = true)
-    private House house;
+    private List<House> houses;
 
     public User(String userName, String name) {
         this.userName = userName;
         this.name = name;
+        this.houses = new ArrayList<House>();
     }
 
     public User() {
@@ -44,12 +51,16 @@ public class User {
         this.name = name;
     }
 
-    public House getHouse() {
-        return house;
+    public List<House> getHouses() {
+        return this.houses;
     }
 
-    public void setHouse(House house) {
-        this.house = house;
+    public void addHouse(House house) {
+        this.houses.add(house);
+    }
+
+    public void setHouses(List<House> houses) {
+        this.houses = houses;
     }
 
     @Override
@@ -58,7 +69,7 @@ public class User {
                 "id='" + id + '\'' +
                 ", userName='" + userName + '\'' +
                 ", name='" + name + '\'' +
-                ", house=" + house +
+                ", house=" + houses +
                 '}';
     }
 }

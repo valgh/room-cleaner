@@ -70,8 +70,9 @@ public class HouseRepositoryTest {
         house.setAddress("address, 71");
 
         houseRepository.save(house);
+        assertThat(houseRepository.findByAddress("address, 71").isPresent()).isEqualTo(Boolean.TRUE);
         assertThat(
-                houseRepository.findByAddress("address, 71").get(0).getAddress()
+                houseRepository.findByAddress("address, 71").get().get(0).getAddress()
         ).isEqualTo("address, 71");
     }
 

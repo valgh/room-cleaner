@@ -71,7 +71,7 @@ public class UserControllerTest {
         User response = objectMapper.readValue(result.getBody(), User.class);
         assertThat(response.getName()).isEqualTo(newUser.getName());
         assertThat(response.getUserName()).isEqualTo(newUser.getUserName());
-        assertThat(response.getHouse()).isNull();
+        assertThat(response.getHouses()).isNull();
     }
 
     @Test

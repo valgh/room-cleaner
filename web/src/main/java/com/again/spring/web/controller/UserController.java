@@ -26,12 +26,9 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity getUserById(@PathVariable String id) {
+    public ResponseEntity getUserById(@PathVariable(required = true) String id) {
         Optional<User> result = this.userRepository.findById(id);
-        if (result.isPresent()) {
-            return ResponseEntity.ok(result.get());
-        }
-        return ResponseEntity.notFound().build();
+        return ControllerUtility.buildResponse(result);
     }
 
     @PostMapping("/create")
@@ -40,25 +37,19 @@ public class UserController {
     }
 
     @GetMapping("/username/{userName}")
-    public ResponseEntity getUsersByUserName(@PathVariable String userName) {
+    public ResponseEntity getUsersByUserName(@PathVariable(required = true) String userName) {
         List<User> result = this.userRepository.findUsersByUserName(userName);
-        if (!result.isEmpty()) {
-            return ResponseEntity.ok(result);
-        }
-        return ResponseEntity.notFound().build();
+        return ControllerUtility.buildResponse(result);
     }
 
     @GetMapping("/name/{name}")
-    public ResponseEntity getUsersByName(@PathVariable String name) {
+    public ResponseEntity getUsersByName(@PathVariable(required = true) String name) {
         List<User> result = this.userRepository.findUsersByName(name);
-        if (!result.isEmpty()) {
-            return ResponseEntity.ok(result);
-        }
-        return ResponseEntity.notFound().build();
+        return ControllerUtility.buildResponse(result);
     }
 
     @PutMapping("/assign/{id}")
-    public User assignHouse(@PathVariable String id, @RequestParam String houseId) {
+    public User assignHouse(@PathVariable(required = true) String id, @RequestParam(required = true) String houseId) {
         return null;
     }
 }

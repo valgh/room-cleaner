@@ -7,9 +7,11 @@ import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 
 import java.util.List;
+import java.util.Optional;
+
 public interface HouseRepository extends MongoRepository<House, String>, QuerydslPredicateExecutor<House> {
     @Query("{ 'address' : ?0 }")
-    List<House> findByAddress(String address);
+    Optional<List<House>> findByAddress(String address);
     @Query
-    List<House> findByTenantsId(String id);
+    Optional<List<House>> findByTenantsId(String id);
 }

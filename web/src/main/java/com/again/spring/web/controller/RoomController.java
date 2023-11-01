@@ -24,36 +24,36 @@ public class RoomController {
     }
 
     @PostMapping("/create")
-    public Room createRoom(@RequestBody Room room) {
+    public Room createRoom(@RequestBody(required = true) Room room) {
         return this.roomRepository.insert(room);
     }
 
     @GetMapping("/house/{houseId}")
-    public ResponseEntity getRoomsInHouse(@PathVariable String houseId) {
+    public ResponseEntity getRoomsInHouse(@PathVariable(required = true) String houseId) {
         List<Room> result = this.roomRepository.findByHouseId(houseId);
-        return buildResponse(result);
+        return ControllerUtility.buildResponse(result);
     }
 
     @GetMapping("/house/{houseId}/type/{type}")
-    public ResponseEntity getRoomsInHouseByType(@PathVariable String houseId, @PathVariable RoomType type) {
+    public ResponseEntity getRoomsInHouseByType(@PathVariable(required = true) String houseId, @PathVariable(required = true) RoomType type) {
         List<Room> result = this.roomRepository.findByHouseIdAndType(houseId, type);
-        return buildResponse(result);
+        return ControllerUtility.buildResponse(result);
     }
 
     @GetMapping("/house/{houseId}/status")
-    public ResponseEntity getRoomsInHouseByStatus(@PathVariable String houseId, @RequestParam Boolean status) {
+    public ResponseEntity getRoomsInHouseByStatus(@PathVariable(required = true) String houseId, @RequestParam(required = true) Boolean status) {
         List<Room> result = this.roomRepository.findByHouseIdAndIsClean(houseId, status);
-        return buildResponse(result);
+        return ControllerUtility.buildResponse(result);
     }
 
     @GetMapping("/house/{houseId}/tenant")
-    public ResponseEntity getRoomsInHouseByAssignedTenantId(@PathVariable String houseId, @RequestParam String id) {
+    public ResponseEntity getRoomsInHouseByAssignedTenantId(@PathVariable(required = true) String houseId, @RequestParam(required = true) String id) {
         List<Room> result = this.roomRepository.findByHouseIdAndAssignedTenantId(houseId, id);
-        return buildResponse(result);
+        return ControllerUtility.buildResponse(result);
     }
 
     @PutMapping("/{id}/status")
-    public ResponseEntity setRoomStatus(@PathVariable String id, @RequestParam Boolean status) {
+    public ResponseEntity setRoomStatus(@PathVariable(required = true) String id, @RequestParam(required = true) Boolean status) {
         Optional<Room> optionalRoom = this.roomRepository.findById(id);
         if (optionalRoom.isPresent()) {
             Room r = optionalRoom.get();
@@ -64,19 +64,12 @@ public class RoomController {
     }
 
     @PutMapping("/{id}/assign/")
-    public ResponseEntity assignTenant(@PathVariable String id, @RequestParam String userId) {
+    public ResponseEntity assignTenant(@PathVariable(required = true) String id, @RequestParam(required = true) String userId) {
         return null;
     }
 
     @PutMapping("/{id}/remove")
-    public ResponseEntity removeTenant(@PathVariable String id) {
+    public ResponseEntity removeTenant(@PathVariable(required = true) String id) {
         return null;
-    }
-
-    private ResponseEntity buildResponse(List result) {
-        if (!result.isEmpty()) {
-            return ResponseEntity.ok(result);
-        }
-        return ResponseEntity.notFound().build();
     }
 }
