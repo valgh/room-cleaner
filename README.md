@@ -1,7 +1,7 @@
 # Room Cleaner
 
 RoomCleaner is a simple Web application built with SpringBoot/SpringData and MongoDB.
-It's a backe-end engine which supports the storage, retrieval and update of data concerning Houses, Rooms and Tenants,
+It supports the storage, retrieval and update of data concerning Houses, Rooms and Tenants,
 aiming at improving your day-to-day planning of cleaning activities around your house.
 
 This project is still at a very early stage, but it offers some documented REST APIs (which may change in the future) that lay the foundations for RoomCleaner's core services.
