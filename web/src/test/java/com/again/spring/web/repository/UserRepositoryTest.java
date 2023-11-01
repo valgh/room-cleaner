@@ -1,5 +1,6 @@
 package com.again.spring.web.repository;
 
+import com.again.spring.web.builders.UserBuilder;
 import com.again.spring.web.config.MongoConfig;
 import com.again.spring.web.model.House;
 import com.again.spring.web.model.Room;
@@ -48,9 +49,7 @@ public class UserRepositoryTest {
 
     @Test
     public void testSaveUser() {
-        final User user = new User();
-        user.setUserName("username01");
-        user.setName("name01");
+        final User user = new UserBuilder().setUsername("username01").setName("name01").build();
 
         userRepository.save(user);
         assertThat(
@@ -65,9 +64,7 @@ public class UserRepositoryTest {
 
     @Test
     public void testFindUser() {
-        final User user = new User();
-        user.setUserName("valgx");
-        user.setName("vvv");
+        final User user = new UserBuilder().setUsername("valgx").setName("vvv").build();
 
         userRepository.save(user);
         assertThat(userRepository.findUsersByUserName("valgx").get(0).getUserName()).isEqualTo("valgx");

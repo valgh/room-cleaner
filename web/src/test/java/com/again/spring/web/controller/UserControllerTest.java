@@ -1,5 +1,6 @@
 package com.again.spring.web.controller;
 
+import com.again.spring.web.builders.UserBuilder;
 import com.again.spring.web.model.House;
 import com.again.spring.web.model.User;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -35,6 +36,8 @@ public class UserControllerTest {
     private ObjectMapper objectMapper = new ObjectMapper();
     @LocalServerPort
     int serverPort;
+    private final User u1 = new UserBuilder().setUsername("username").setName("name").build();
+    private final User u2 = new UserBuilder().setUsername("username").setName("zzz").build();
 
     @Test
     public void contextLoads() throws Exception {
@@ -57,21 +60,17 @@ public class UserControllerTest {
     @Test
     public void shouldSaveNewUser() throws JsonProcessingException {
         final String baseUrl = "http://localhost:"+serverPort+"/users/";
-        final User newUser = new User();
-        newUser.setUserName("username");
-        newUser.setName("name");
         HttpHeaders headers = new HttpHeaders();
         headers.set("Content-Type", "application/json");
 
-        HttpEntity<User> request = new HttpEntity<>(newUser, headers);
+        HttpEntity<User> request = new HttpEntity<>(u1, headers);
         ResponseEntity<String> result = restTemplate.postForEntity(baseUrl+"create", request, String.class);
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(result.hasBody()).isEqualTo(Boolean.TRUE);
         User response = objectMapper.readValue(result.getBody(), User.class);
-        assertThat(response.getName()).isEqualTo(newUser.getName());
-        assertThat(response.getUserName()).isEqualTo(newUser.getUserName());
-        assertThat(response.getHouses()).isNull();
+        assertThat(response.getName()).isEqualTo(u1.getName());
+        assertThat(response.getUserName()).isEqualTo(u1.getUserName());
     }
 
     @Test
@@ -84,17 +83,14 @@ public class UserControllerTest {
     @Test
     public void shouldFindUserById() throws JsonProcessingException {
         final String baseUrl = "http://localhost:"+serverPort+"/users/";
-        final User newUser = new User();
-        newUser.setUserName("username");
-        newUser.setName("name");
-        User userAdded = userController.createUser(newUser);
+        User userAdded = userController.createUser(u1);
 
         ResponseEntity<String> result = restTemplate.getForEntity(baseUrl+"/"+userAdded.getId(), String.class);
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(result.hasBody()).isEqualTo(Boolean.TRUE);
         User queriedUser = objectMapper.readValue(result.getBody(), User.class);
-        assertThat(queriedUser.getUserName()).isEqualTo("username");
-        assertThat(queriedUser.getName()).isEqualTo("name");
+        assertThat(queriedUser.getUserName()).isEqualTo(u1.getUserName());
+        assertThat(queriedUser.getName()).isEqualTo(u1.getName());
     }
 
     @Test
@@ -107,11 +103,8 @@ public class UserControllerTest {
     @Test
     public void shouldFindUsersByName() throws JsonProcessingException {
         final String baseUrl = "http://localhost:"+serverPort+"/users/";
-        final User newUser = new User();
-        newUser.setUserName("username");
-        newUser.setName("zzz");
-        userController.createUser(newUser);
-        userController.createUser(new User("username2", "zzz"));
+        userController.createUser(u2);
+        userController.createUser(new UserBuilder().setUsername("username2").setName("zzz").build());
 
         ResponseEntity<String> result = restTemplate.getForEntity(baseUrl+"/name/zzz", String.class);
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -119,8 +112,8 @@ public class UserControllerTest {
         List<User> queriedUsers = objectMapper.readValue(result.getBody(), objectMapper.getTypeFactory().constructCollectionType(List.class, User.class));
         assertThat(queriedUsers).isNotNull();
         assertThat(queriedUsers.size()).isGreaterThan(1);
-        queriedUsers.stream().forEach(user -> {
-            assertThat(user.getName()).isEqualTo("zzz");
+        queriedUsers.forEach(user -> {
+            assertThat(user.getName()).isEqualTo(u2.getName());
         });
     }
 }

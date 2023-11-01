@@ -19,13 +19,10 @@ public class User {
     private String id;
     private String userName;
     private String name;
-    @DocumentReference(lazy = true)
-    private List<House> houses;
 
     public User(String userName, String name) {
         this.userName = userName;
         this.name = name;
-        this.houses = new ArrayList<House>();
     }
 
     public User() {
@@ -51,25 +48,12 @@ public class User {
         this.name = name;
     }
 
-    public List<House> getHouses() {
-        return this.houses;
-    }
-
-    public void addHouse(House house) {
-        this.houses.add(house);
-    }
-
-    public void setHouses(List<House> houses) {
-        this.houses = houses;
-    }
-
     @Override
     public String toString() {
         return "User{" +
                 "id='" + id + '\'' +
                 ", userName='" + userName + '\'' +
                 ", name='" + name + '\'' +
-                ", house=" + houses +
                 '}';
     }
 }

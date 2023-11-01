@@ -1,5 +1,8 @@
 package com.again.spring.web.repository;
 
+import com.again.spring.web.builders.HouseBuilder;
+import com.again.spring.web.builders.RoomBuilder;
+import com.again.spring.web.builders.UserBuilder;
 import com.again.spring.web.config.MongoConfig;
 import com.again.spring.web.model.House;
 import com.again.spring.web.model.Room;
@@ -13,6 +16,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+
+import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -41,13 +46,9 @@ public class RoomRepositoryTest {
         if (!mongoTemplate.collectionExists(User.class)) {
             mongoTemplate.createCollection(User.class);
         }
-        final User user = new User();
-        user.setUserName("vgxz");
-        user.setName("vvbc");
+        final User user = new UserBuilder().setUsername("vgxz").setName("vvbc").build();
         userRepository.save(user);
-        final House house = new House();
-        house.setAddress("lptc, 51, rm");
-        house.addTenant(user);
+        final House house = new HouseBuilder().setAddress("lptc, 51, rm").setTenants(Collections.singletonList(user)).build();
         houseRepository.save(house);
     }
 
@@ -62,13 +63,9 @@ public class RoomRepositoryTest {
         final House persistedHouse = mongoTemplate.findOne(Query.query(Criteria.where("address").is("lptc, 51, rm")), House.class);
 
         assert tenant != null;
-        tenant.addHouse(persistedHouse);
         userRepository.save(tenant);
 
-        final Room room = new Room();
-        room.setHouse(persistedHouse);
-        room.setAssignedTenant(tenant);
-        room.setType(RoomType.BEDROOM);
+        final Room room = new RoomBuilder().setHouse(persistedHouse).setTenant(tenant).setType(RoomType.BEDROOM).build();
         roomRepository.save(room);
 
         assertThat(
@@ -81,9 +78,7 @@ public class RoomRepositoryTest {
     public void findByHouseAndRoomType() {
         final House persistedHouse = mongoTemplate.findOne(Query.query(Criteria.where("address").is("lptc, 51, rm")), House.class);
 
-        final Room room = new Room();
-        room.setHouse(persistedHouse);
-        room.setType(RoomType.KITCHEN);
+        final Room room =  new RoomBuilder().setHouse(persistedHouse).setType(RoomType.KITCHEN).build();
         roomRepository.insert(room);
         persistedHouse.addRoom(room);
         houseRepository.save(persistedHouse);

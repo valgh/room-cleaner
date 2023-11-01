@@ -1,5 +1,7 @@
 package com.again.spring.web.repository;
 
+import com.again.spring.web.builders.HouseBuilder;
+import com.again.spring.web.builders.UserBuilder;
 import com.again.spring.web.config.MongoConfig;
 import com.again.spring.web.model.House;
 import com.again.spring.web.model.User;
@@ -11,6 +13,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+
+import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -38,9 +42,7 @@ public class HouseRepositoryTest {
         if (!mongoTemplate.collectionExists(User.class)) {
             mongoTemplate.createCollection(User.class);
         }
-        final User user = new User();
-        user.setUserName("tenant");
-        user.setName("superTenant");
+        final User user = new UserBuilder().setUsername("tenant").setName("superTenant").build();
         userRepository.save(user);
     }
 
@@ -53,9 +55,7 @@ public class HouseRepositoryTest {
     public void testSaveHouse() {
         final User tenant = mongoTemplate.findOne(Query.query(Criteria.where("userName").is("tenant")), User.class);
 
-        final House house = new House();
-        house.setAddress("pppx, 71");
-        house.addTenant(tenant);
+        final House house = new HouseBuilder().setAddress("pppx, 71").setTenants(Collections.singletonList(tenant)).build();
 
         houseRepository.save(house);
         assertThat(
@@ -66,8 +66,7 @@ public class HouseRepositoryTest {
 
     @Test
     public void testFindHouseByAddress() {
-        final House house = new House();
-        house.setAddress("address, 71");
+        final House house = new HouseBuilder().setAddress("address, 71").build();
 
         houseRepository.save(house);
         assertThat(houseRepository.findByAddress("address, 71").isPresent()).isEqualTo(Boolean.TRUE);
